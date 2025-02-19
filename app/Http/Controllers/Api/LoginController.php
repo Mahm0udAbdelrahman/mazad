@@ -35,7 +35,7 @@ class LoginController extends Controller
     public function resetPassword(ResetPasswordRequest $resetPasswordRequest)
     {
         $user = User::where('phone', $resetPasswordRequest->phone)->first();
-        if ($user) {
+        if ($user->code == $resetPasswordRequest->otp) {
             $user->update(['password' => Hash::make($resetPasswordRequest->password)]);
             return $this->okResponse(LoginResource::make($user), __('The password has been reset successfully', [], Request()->header('Accept-language')));
         }

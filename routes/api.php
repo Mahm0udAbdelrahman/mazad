@@ -11,6 +11,8 @@ Route::get('/user', function (Request $request) {
 
 Route::post("/register/vendor", [RegisterController::class ,'registerVendor']);
 Route::post("/register/merchant", [RegisterController::class ,'registerMerchant']);
+Route::post('/verify', [RegisterController::class, 'verify']);
+Route::post('/otp', [RegisterController::class, 'otp']);
 Route::post("/login", [LoginController::class ,'login']);
 
 
