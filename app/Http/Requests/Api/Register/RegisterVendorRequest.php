@@ -3,6 +3,9 @@
 namespace App\Http\Requests\Api\Register;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegisterVendorRequest extends FormRequest
 {
@@ -33,5 +36,15 @@ class RegisterVendorRequest extends FormRequest
             'password' => 'required|string|min:8|confirmed',
 
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => __('Validation failed', [], request()->header('Accept-language')),
+                'errors' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)
+        );
     }
 }

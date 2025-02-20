@@ -32,7 +32,11 @@ class User extends Authenticatable
         'email',
         'password',
         'code',
-        'verify'
+        'verify',
+        'auction'
+
+
+      
 
     ];
 

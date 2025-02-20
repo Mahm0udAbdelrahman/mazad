@@ -3,6 +3,9 @@
 namespace App\Http\Requests\Api\Login;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResetPasswordRequest extends FormRequest
 {
@@ -22,9 +25,18 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required|string',
+            'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
-             'otp' => 'required|numeric'
+            'otp' => 'required|numeric'
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'message' => __('Validation failed', [], request()->header('Accept-language')),
+                'errors' => $validator->errors(),
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)
+        );
     }
 }

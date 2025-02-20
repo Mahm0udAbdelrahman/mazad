@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api\Register;
+namespace App\Http\Requests\Api\Insurance;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Symfony\Component\HttpFoundation\Response;
-class CodeRequest extends FormRequest
+class InsuranceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class CodeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'otp' => 'required|numeric'
+           'balance' => 'required|numeric',
+           'payment_method'=> 'required|string|in:card,wallet',
         ];
     }
 
@@ -38,4 +38,5 @@ class CodeRequest extends FormRequest
             ], Response::HTTP_UNPROCESSABLE_ENTITY)
         );
     }
+
 }

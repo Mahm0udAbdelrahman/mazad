@@ -8,11 +8,39 @@ class Car extends Model
 {
     protected $fillable = [
         'user_id',
-        'product_id',
-        'quantity',
+        'car_type_id',
+        'name',
+        'type',
+        'model',
+        'year',
+        'color',
         'price',
-        'total',
+        'description',
+        'image',
         'status',
+        'kilometer',
+        'video',
+        'deposit',
+        'license_year',
+        'image_license',
+        'sold',
+        'report'
     ];
+    public function user()
+    {
+            return $this->belongsTo(User::class);
+    }
+    public function carType()
+    {
+        return $this->belongsTo(CarType::class);
+    }
+    public function carImages()
+    {
+        return $this->hasMany(CarImage::class);
+    }
+
+
+
+
 
 }

@@ -17,10 +17,10 @@ class LoginResource extends JsonResource
         return [
             "id"=> $this->id,
             'name' =>  $this->name,
+            'email'=> $this->email,
             'address' => $this->address,
             'phone'=> $this->phone,
             'national_number' => $this->national_number,
-            'code' => $this->code,
             'image' => $this->image,
             'service' => $this->service,
             'category' => $this->category,

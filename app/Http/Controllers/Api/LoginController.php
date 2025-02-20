@@ -19,7 +19,10 @@ class LoginController extends Controller
     use HttpResponse , HasImage;
     public function login(LoginRequest $loginRequest)
     {
-        $user = User::where('name', $loginRequest->name)->first();
+        $user = User::where('email', $loginRequest->email)->first();
+        if($user->verify != 1){
+            return $this->errorResponse(__('The user account has not been verified yet', [], Request()->header('Accept-language')));
+        }
         if ($user && Hash::check($loginRequest->password, $user->password)) {
 
             $user->update(['fcm_token' => $loginRequest->fcm_token]);
@@ -34,7 +37,7 @@ class LoginController extends Controller
 
     public function resetPassword(ResetPasswordRequest $resetPasswordRequest)
     {
-        $user = User::where('phone', $resetPasswordRequest->phone)->first();
+        $user = User::where('email', $resetPasswordRequest->email)->first();
         if ($user->code == $resetPasswordRequest->otp) {
             $user->update(['password' => Hash::make($resetPasswordRequest->password)]);
             return $this->okResponse(LoginResource::make($user), __('The password has been reset successfully', [], Request()->header('Accept-language')));

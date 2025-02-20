@@ -16,13 +16,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users','id')->cascadeOnDelete();
             $table->foreignId('car_type_id')->constrained('car_types','id')->cascadeOnDelete();
             $table->string('name');
-            $table->string('type');
             $table->string('model');
             $table->string('color');
-            $table->string('kol_mater');
+            $table->string('kilometer');
             $table->string('price');
             $table->text('description');
             $table->string('video');
+            $table->string('license_year');
             $table->string('image_license');
             $table->string('report');
             $table->enum('status', ['pending','approved','rejected'])->default('pending');
