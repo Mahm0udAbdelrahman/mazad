@@ -31,6 +31,9 @@ class User extends Authenticatable
         'category',
         'email',
         'password',
+        'code',
+        'verify'
+
     ];
 
     /**

@@ -24,8 +24,10 @@ class RegisterVendorRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
             'phone'=> 'required|string|unique:users,phone',
-            'national_number' => 'required|string|unique:users,national_number',
+            'service' => 'required|in:vendor,merchant',
+            'national_number' => 'required_if:service,vendor|string|unique:users,national_number',
             'image' => 'nullable|image',
             'category' => 'required|in:dealer,my',
             'password' => 'required|string|min:8|confirmed',

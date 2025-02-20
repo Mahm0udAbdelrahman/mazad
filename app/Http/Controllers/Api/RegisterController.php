@@ -21,18 +21,19 @@ class RegisterController extends Controller
     use HttpResponse;
     public function __construct(public RegisterService $registerService){}
 
-    public function registerVendor(RegisterVendorRequest $request){
-        $data = $this->registerService->registerVendor($request->validated());
+    public function register(RegisterVendorRequest $request)
+    {
+        $data = $this->registerService->register($request->validated());
 
         return $this->okResponse(new RegisterVendorResource($data));
     }
 
-    public function registerMerchant(RegisterMerchantRequest $request)
-    {
-        $data = $this->registerService->registerMerchant($request->validated());
+    // public function registerMerchant(RegisterMerchantRequest $request)
+    // {
+    //     $data = $this->registerService->registerMerchant($request->validated());
 
-        return $this->okResponse(new RegisterMerchantResource($data));
-    }
+    //     return $this->okResponse(new RegisterMerchantResource($data));
+    // }
 
     public function verify(CodeRequest $codeRequest)
     {

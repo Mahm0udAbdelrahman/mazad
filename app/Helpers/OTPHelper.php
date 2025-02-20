@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Mail;
 
 class OTPHelper
 {
-    public static function sendOtp($user,$otp)
+    public static function sendOtp($email,$otp)
     {
-        Mail::to($user->email)->send(new OTPEmail($otp));
-        $user->update(['code' => $otp]);
+        Mail::to($email)->send(new OTPEmail($otp));
+        // $user->update(['code' => $otp]);
     }
 }

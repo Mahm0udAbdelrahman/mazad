@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post("/register/vendor", [RegisterController::class ,'registerVendor']);
+Route::post("/register", [RegisterController::class ,'register']);
 Route::post("/register/merchant", [RegisterController::class ,'registerMerchant']);
 Route::post('/verify', [RegisterController::class, 'verify']);
 Route::post('/otp', [RegisterController::class, 'otp']);
