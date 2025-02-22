@@ -34,6 +34,8 @@ class RegisterVendorRequest extends FormRequest
             'image' => 'nullable|image',
             'category' => 'required|in:dealer,my',
             'password' => 'required|string|min:8|confirmed',
+            'terms_and_conditions'=> 'required|boolean',
+            'fcm_token'=> 'required|string'
 
         ];
     }

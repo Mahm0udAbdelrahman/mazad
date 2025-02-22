@@ -28,6 +28,8 @@ class CarResource extends JsonResource
             'image_license'=> $this->image_license,
             'images'=> $this->carImages->pluck('image'),
             'report'=> $this->report,
+            'status' => $this->status,
+            'sold'=> $this->sold
         ];
     }
 }

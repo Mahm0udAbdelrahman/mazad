@@ -24,9 +24,49 @@ class Auction extends Model
     {
         return $this->belongsTo(User::class);
     }
-   
+
     public function car()
     {
         return $this->belongsTo(Car::class);
     }
+
+    public function commitAuctions()
+    {
+        return $this->hasMany(CommitAuction::class);
+    }
+
+    public function winner()
+    {
+        return $this->belongsTo(User::class, 'winner_id');
+    }
+
+    
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, fn($query, $search) => $query->where(fn($query) => $query->where('start_price', 'like', '%' . $search . '%')
+            ->orWhere('start_date', 'like', '%' . $search . '%')
+            ->orWhere('end_date', 'like', '%' . $search . '%')
+            ->orWhere('winner_price', 'like', '%' . $search . '%')
+            ->orWhere('winner_date', 'like', '%' . $search . '%')
+            ->orWhere('status', 'like', '%' . $search . '%')
+        ));
+    }
+
+
+
+    public function scopeSort($query, array $sorts)
+    {
+        $sorts = $sorts['sort'] ?? 'id';
+        $order = $sorts['order'] ?? 'asc';
+
+        $query->when($sorts, fn($query, $sorts) => $query->orderBy($sorts, $order));
+    }
+
+    public function scopeStatus($query, $status)
+    {
+        $query->when($status, fn($query, $status) => $query->where('status', $status));
+    }
+
+
 }

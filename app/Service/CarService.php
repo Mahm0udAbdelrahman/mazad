@@ -2,15 +2,14 @@
 namespace App\Service;
 
 use App\Models\Car;
-use App\Models\User;
 use App\Models\Auction;
-use App\Models\CarImage;
 use App\Traits\HasImage;
 use App\Models\Insurance;
-use App\Helpers\OTPHelper;
 use App\Traits\HttpResponse;
-use App\Http\Resources\CarResource;
-use Symfony\Component\HttpFoundation\Response;
+
+use Illuminate\Support\Facades\Storage;
+use App\Exceptions\InsuranceNotFoundException;
+
 
 class CarService
 {
@@ -21,21 +20,34 @@ class CarService
 
     public function index()
     {
-        $cars = Car::where('user_id', auth()->id())->paginate();
-
-        return $this->paginatedResponse($cars, CarResource::class);
+        return Car::where('user_id', auth()->id())->paginate();
+    }
+    public function filterCars(array $filters)
+    {
+        return Car::query()->where('status', 'approved')->filter($filters)->paginate(10); 
     }
 
-    public function store($data)
+    public function getCarStatusPending()
+    {
+        return Car::where('user_id', auth()->id())->where('status', 'pending')->paginate();
+    }
+
+    public function getCarStatusApproved()
+    {
+        return Car::where('user_id', auth()->id())->where('status', 'approved')->paginate();
+    }
+
+    public function getCarStatusRejected()
+    {
+        return Car::where('user_id', auth()->id())->where('status', 'rejected')->paginate();
+    }
+
+    public function store(array $data): Car
     {
         $user = auth()->user();
 
         if (!$user || $user->service !== 'vendor') {
-            return $this->errorResponse(
-                null,
-                Response::HTTP_BAD_REQUEST,
-                __('The user is not associated with a vendor account.', [], request()->header('Accept-language'))
-            );
+            throw new InsuranceNotFoundException(__('The user is not associated with a vendor account.', [], request()->header('Accept-language')));
         }
 
         $minBalance = [
@@ -44,79 +56,57 @@ class CarService
         ][$user->category] ?? null;
 
         if (is_null($minBalance)) {
-            return $this->errorResponse(
-                null,
-                Response::HTTP_BAD_REQUEST,
-                __('Invalid category', [], request()->header('Accept-language'))
-            );
+            throw new InsuranceNotFoundException(__('Invalid category', [], request()->header('Accept-language')));
         }
 
         $insurance = Insurance::where('user_id', $user->id)->first();
 
         if (!$insurance) {
-            return $this->errorResponse(
-                null,
-                Response::HTTP_BAD_REQUEST,
-                __('No insurance found for the user.', [], request()->header('Accept-language'))
-            );
+            throw new InsuranceNotFoundException(__('No insurance found for the user.', [], request()->header('Accept-language')), 404);
+
         }
 
         if ($insurance->balance < $minBalance) {
-            return $this->errorResponse(
-                null,
-                Response::HTTP_BAD_REQUEST,
-                __('You need to have an insurance balance of :minBalance or more to add a car.', [
-                    'minBalance' => $minBalance
-                ], request()->header('Accept-language'))
-            );
+            throw new InsuranceNotFoundException(__('You need to have an insurance balance of :minBalance or more to add a car.', [
+                'minBalance' => $minBalance
+            ], request()->header('Accept-language')));
         }
 
-
         if ($insurance->payment_status !== 'paid') {
-            return $this->errorResponse(
-                null,
-                Response::HTTP_BAD_REQUEST,
-                __('Your insurance payment status must be paid to add a car.', [], request()->header('Accept-language'))
-            );
+            throw new InsuranceNotFoundException(__('Your insurance payment status must be paid to add a car.', [], request()->header('Accept-language')));
         }
 
         $data['user_id'] = $user->id;
-        if ($data['image_license']) {
-            $data['image_license'] = $this->saveImage($data['image_license'], 'car/image_license');
-        }
-        if ($data['video']) {
-            $data['video'] = $this->saveImage($data['video'], 'car/image_license');
-        }
-        if ($data['report']) {
-            $data['report'] = $this->saveImage($data['report'], 'car/image_license');
-        }
+        $data['image_license'] = $data['image_license'] ?? null ? $this->saveImage($data['image_license'], 'car/image_license') : null;
+        $data['video'] = $data['video'] ?? null ? $this->saveImage($data['video'], 'car/video') : null;
+        $data['report'] = $data['report'] ?? null ? $this->saveImage($data['report'], 'car/report') : null;
 
         $newCar = $this->car->create($data);
-        foreach ($data['images'] as $image) {
-            $newCar->carImages()->create([
-                'image' => $this->saveImage($image, 'car/images'),
-            ]);
+
+        if (isset($data['images'])) {
+            foreach ($data['images'] as $image) {
+                $newCar->carImages()->create([
+                    'image' => $this->saveImage($image, 'car/images'),
+                ]);
+            }
         }
 
-       return $this->okResponse(new CarResource($newCar), __('The car has been added successfully', [], request()->header('Accept-language')));
+        return $newCar;
     }
 
 
     public function show($id)
     {
-        $car  = $this->car->findOrFail($id);
-        return $this->okResponse(new CarResource($car), __('The car has been  successfully', [], request()->header('Accept-language')));
+        return $this->car->findOrFail($id);
     }
-    public function update($id, $data)
+
+
+public function update($id, array $data): Car
 {
     $user = auth()->user();
 
     if (!$user || $user->service !== 'vendor') {
-        return $this->errorResponse(
-            null,
-            Response::HTTP_BAD_REQUEST,
-            __('The user is not associated with a vendor account.', [], request()->header('Accept-language'))
-        );
+        throw new InsuranceNotFoundException(__('The user is not associated with a vendor account.', [], request()->header('Accept-language')));
     }
 
     $minBalance = [
@@ -125,72 +115,45 @@ class CarService
     ][$user->category] ?? null;
 
     if (is_null($minBalance)) {
-        return $this->errorResponse(
-            null,
-            Response::HTTP_BAD_REQUEST,
-            __('Invalid category', [], request()->header('Accept-language'))
-        );
+        throw new InsuranceNotFoundException(__('Invalid category', [], request()->header('Accept-language')));
     }
 
     $insurance = Insurance::where('user_id', $user->id)->first();
 
     if (!$insurance) {
-        return $this->errorResponse(
-            null,
-            Response::HTTP_BAD_REQUEST,
-            __('No insurance found for the user.', [], request()->header('Accept-language'))
-        );
+        throw new InsuranceNotFoundException(__('No insurance found for the user.', [], request()->header('Accept-language')));
     }
 
     if ($insurance->balance < $minBalance) {
-        return $this->errorResponse(
-            null,
-            Response::HTTP_BAD_REQUEST,
-            __('You need to have an insurance balance of :minBalance or more to update the car.', [
-                'minBalance' => $minBalance
-            ], request()->header('Accept-language'))
-        );
+        throw new InsuranceNotFoundException(__('You need to have an insurance balance of :minBalance or more to update the car.', [
+            'minBalance' => $minBalance
+        ], request()->header('Accept-language')));
     }
 
     if ($insurance->payment_status !== 'paid') {
-        return $this->errorResponse(
-            null,
-            Response::HTTP_BAD_REQUEST,
-            __('Your insurance payment status must be paid to update the car.', [], request()->header('Accept-language'))
-        );
+        throw new InsuranceNotFoundException(__('Your insurance payment status must be paid to update the car.', [], request()->header('Accept-language')));
     }
 
     $car = $this->car->findOrFail($id);
 
-    if (!$car || $car->user_id !== $user->id) {
-        return $this->errorResponse(
-            null,
-            Response::HTTP_NOT_FOUND,
-            __('Car not found or you do not have permission to update it.', [], request()->header('Accept-language'))
-        );
+    if ($car->user_id !== $user->id) {
+        throw new InsuranceNotFoundException(__('Car not found or you do not have permission to update it.', [], request()->header('Accept-language')));
     }
 
     $data['user_id'] = $user->id;
 
-    if (isset($data['image_license'])) {
-        $this->deleteOldImage($car->image_license);
-        $data['image_license'] = $this->saveImage($data['image_license'], 'car/image_license');
+    foreach (['image_license', 'video', 'report'] as $field) {
+        if (isset($data[$field])) {
+            $this->deleteOldImage($car->$field);
+            $data[$field] = $this->saveImage($data[$field], "car/$field");
+        }
     }
 
-    if (isset($data['video'])) {
-        $this->deleteOldImage($car->video);
-        $data['video'] = $this->saveImage($data['video'], 'car/image_license');
-    }
-
-    if (isset($data['report'])) {
-        $this->deleteOldImage($car->report);
-        $data['report'] = $this->saveImage($data['report'], 'car/image_license');
-    }
-
-    if($data['status'] == 'approved'){
-        Auction::create([
+    if (isset($data['status']) && $data['status'] === 'approved') {
+        Auction::firstOrCreate([
             'car_id' => $car->id,
-            'user_id'=> $user->id,
+            'user_id' => $user->id,
+        ], [
             'start_date' => now(),
             'end_date' => now()->addDays(30),
             'start_price' => $car->price,
@@ -199,11 +162,8 @@ class CarService
 
     $car->update($data);
 
-    if (isset($data['images']) && is_array($data['images'])) {
-        foreach ($car->carImages as $existingImage) {
-            $this->deleteOldImage($existingImage->image);
-            $existingImage->delete();
-        }
+    if (!empty($data['images']) && is_array($data['images'])) {
+        $car->carImages()->each(fn($image) => $this->deleteOldImage($image->image) && $image->delete());
 
         foreach ($data['images'] as $image) {
             $car->carImages()->create([
@@ -212,13 +172,14 @@ class CarService
         }
     }
 
-    return $this->okResponse(new CarResource($car), __('The car has been updated successfully', [], request()->header('Accept-language')));
+    return $car;
 }
+
 
 private function deleteOldImage($path)
 {
-    if ($path && \Storage::exists($path)) {
-        \Storage::delete($path);
+    if ($path && Storage::exists($path)) {
+        Storage::delete($path);
     }
 }
 
@@ -226,7 +187,7 @@ private function deleteOldImage($path)
     {
         $car = $this->car->findOrFail($id);
         $car->delete();
-        return $this->okResponse(new CarResource($car), __('The car has been deleted successfully', [], request()->header('Accept-language')));
+        return $car;
     }
 
 }

@@ -18,10 +18,10 @@ return new class extends Migration
             $table->string('start_price');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
-            $table->string('winner_id')->nullable();
+            $table->foreignId('winner_id')->nullable()->constrained('users','id')->cascadeOnDelete();
             $table->string('winner_price')->nullable();
             $table->string('winner_date')->nullable();
-            $table->enum('status', ['upcoming', 'ongoing', 'completed'])->default('upcoming');
+            $table->enum('status', ['pending', 'won', 'lost'])->default('pending');
             $table->timestamps();
         });
     }

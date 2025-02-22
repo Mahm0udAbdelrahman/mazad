@@ -33,10 +33,16 @@ class User extends Authenticatable
         'password',
         'code',
         'verify',
-        'auction'
+        'auction',
+        'active',
+        'expire_at',
+        'fcm_token',
+        'terms_and_conditions',
+        'email_verified_at',
 
 
-      
+
+
 
     ];
 
@@ -62,4 +68,51 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function cars()
+    {
+        return $this->hasMany(Car::class);
+    }
+
+    public function auctions()
+    {
+        return $this->hasMany(Auction::class);
+    }
+
+    public function insurance()
+    {
+        return $this->hasOne(Insurance::class);
+    }
+
+    public function commitAuctions()
+    {
+        return $this->hasMany(CommitAuction::class);
+    }
+
+    // public function setPasswordAttribute($value)
+    // {
+    //     $this->attributes['password'] = bcrypt($value);
+    // }
+
+    public function getIsVendorAttribute()
+    {
+        return $this->service === 'vendor';
+    }
+
+    public function getIsMerchantAttribute()
+    {
+        return $this->service === 'merchant';
+    }
+
+    public function getIsDealerAttribute()
+    {
+        return $this->category === 'dealer';
+    }
+
+    public function getIsMyAttribute()
+    {
+        return $this->category === 'my';
+    }
+
+
 }

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('fcm_token')->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('code')->nullable();
+            $table->boolean('active')->default(0);
+            $table->timestamp('expire_at')->nullable();
             $table->boolean('auction')->default(0);
             $table->tinyInteger('verify')->nullable()->comment('1 = verified , 0 = not verified');
             $table->timestamp('email_verified_at')->nullable();

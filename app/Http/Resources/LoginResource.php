@@ -23,6 +23,7 @@ class LoginResource extends JsonResource
             'national_number' => $this->national_number,
             'image' => $this->image,
             'service' => $this->service,
+            'active' => $this->active,
             'category' => $this->category,
         ];
     }

@@ -19,17 +19,17 @@ trait HttpResponse
         mixed $data = null,
         string $message = 'Success',
         int $code = Response::HTTP_OK,
-        bool $showToast = null,
+        // bool $showToast = null,
         array $additional = [],
     ): JsonResponse {
-        $showToast = !is_null($showToast) ? $showToast : request()->method() != 'GET';
+        // $showToast = !is_null($showToast) ? $showToast : request()->method() != 'GET';
 
         return response()->json(array_merge([
             'data' => $data,
             'message' => $message,
             'type' => 'success',
             'code' => $code,
-            'showToast' => $showToast,
+            // 'showToast' => $showToast,
         ], $additional), $code);
     }
 
@@ -37,14 +37,14 @@ trait HttpResponse
         mixed $data = null,
         string $message = 'Success',
         int $code = Response::HTTP_OK,
-        bool $showToast = null,
+        // bool $showToast = null,
         array $additional = [],
     ): JsonResponse {
         return $this->successResponse(
             $data,
             $message,
             $code,
-            $showToast,
+            // $showToast,
             $additional,
         );
     }
@@ -89,7 +89,7 @@ trait HttpResponse
             $data,
             $message,
             $code,
-            $showToast,
+            // $showToast,
             $additional,
         );
     }
@@ -193,7 +193,7 @@ trait HttpResponse
             $data,
             $message,
             $code,
-            $showToast,
+            // $showToast,
             $additional,
         );
     }
