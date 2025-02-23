@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\Auction;
+namespace App\Http\Requests\Api\ChangeLanguage;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateStatusAuctionRequest extends FormRequest
+class ChangeLanguageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class UpdateStatusAuctionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'in:pending,won,lost'],
-            'commit_id' => 'required|exists:commit_auctions,id'
+            'language' => 'required|in:en,ar,ru',
         ];
     }
 }

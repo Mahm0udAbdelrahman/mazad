@@ -94,6 +94,16 @@ trait HttpResponse
         );
     }
 
+    public function sendResponse($result,$message)
+    {
+        $response = [
+            'success' => true,
+            'message' => $message,
+            'data'    => $result,
+        ];
+        return response()->json($response,200);
+    }
+
     public function paginatedResponse(
         LengthAwarePaginator $collection,
         string $resourceClass,
@@ -102,7 +112,8 @@ trait HttpResponse
         int $code = Response::HTTP_OK
     ): JsonResponse {
         $data = [
-            'data' => $isCollection ? new $resourceClass($collection->items()) : $resourceClass::collection($collection->items()),
+            'data' => $resourceClass::collection($collection), // استخدم الـ collection مباشرة
+            // 'data' => $isCollection ? new $resourceClass($collection->items()) : $resourceClass::collection($collection->items()),
             'links' => [
                 'first' => $collection->url(1),
                 'last' => $collection->url($collection->lastPage()),
@@ -113,6 +124,7 @@ trait HttpResponse
                 'current_page' => $collection->currentPage(),
                 'from' => $collection->firstItem(),
                 'last_page' => $collection->lastPage(),
+                'limit' => $collection->perPage(), // استخدم perPage مع اسم limit في الاستجابة
                 'total' => $collection->total(),
             ],
             'message' => $message,

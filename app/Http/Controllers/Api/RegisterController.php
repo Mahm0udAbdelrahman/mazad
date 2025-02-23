@@ -9,7 +9,7 @@ use App\Http\Requests\Api\Register\SendCodeRequest;
 use App\Http\Resources\LoginResource;
 use App\Http\Resources\RegisterResource;
 use App\Models\User;
-use App\Service\RegisterService;
+use App\Services\RegisterService;
 use App\Traits\HttpResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,5 +42,5 @@ class RegisterController extends Controller
         return $this->okResponse($response, __('User account verified successfully', [], request()->header('Accept-language')));
     }
 
-   
+
 }

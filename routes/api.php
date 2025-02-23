@@ -10,6 +10,8 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PasswordController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\InsuranceController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ChangeLanguageController;
 
 
 // register
@@ -46,13 +48,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/car/{id}', [CarController::class, 'show']);
     Route::post('/car/{id}', [CarController::class, 'update']);
     Route::delete('/car/{id}', [CarController::class, 'destroy']);
-    Route::get('/car/pending', [CarController::class, 'getCarStatusPending']);
-    Route::get('/car/approved', [CarController::class, 'getCarStatusApproved']);
-    Route::get('/car/rejected', [CarController::class, 'getCarStatusRejected']);
+    Route::get('/car_pending', [CarController::class, 'getCarStatusPending']);
+    Route::get('/car_approved', [CarController::class, 'getCarStatusApproved']);
+    Route::get('/car_rejected', [CarController::class, 'getCarStatusRejected']);
 
 
     // insurance
     Route::post('/insurance', [InsuranceController::class, 'store']);
+
+     // notifications
+     Route::get('/notifications', [NotificationController::class, 'index']);
+
+    //change_language
+    Route::post('change_language/update', [ChangeLanguageController::class, 'update']);
+
 
     //Auction
     Route::post('/auction/{id}', [AuctionController::class, 'commitAuction']);

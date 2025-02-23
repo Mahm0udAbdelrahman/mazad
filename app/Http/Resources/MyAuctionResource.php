@@ -17,9 +17,8 @@ class MyAuctionResource extends JsonResource
         return [
             'id' => $this->id,
             'user_name' => $this->auction->car->user->name,
+            'user_service' => $this->auction->car->user->service,
             'user_image' => $this->auction->car->user->image,
-            'created_at' => $this->auction->created_at,
-            'images' => $this->auction->car->carImages,
             'car_name' => $this->auction->car->name,
             'report' => $this->auction->car->report,
             'description' => $this->auction->car->description,
@@ -28,7 +27,8 @@ class MyAuctionResource extends JsonResource
             'status' => $this->auction->status,
             'commit' => count($this->auction->commitAuctions),
             'phone' => $this->auction->status === 'won' ? $this->auction->car->user->phone : null,
-
+            'created_at' => $this->auction->created_at,
+            'images' => $this->auction->car->carImages,
         ];
     }
 }

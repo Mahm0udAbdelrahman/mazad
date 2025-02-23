@@ -8,7 +8,7 @@ use App\Http\Resources\AuctionResource;
 use App\Http\Resources\CommitAuctionResource;
 use App\Http\Resources\MyAuctionResource;
 use App\Http\Resources\UpdateStatusAuctionResource;
-use App\Service\AuctionService;
+use App\Services\AuctionService;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
 

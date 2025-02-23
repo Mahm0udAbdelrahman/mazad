@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
-use App\Service\PasswordService;
+use App\Services\PasswordService;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LoginResource;
 use App\Http\Requests\Api\Login\ChangePassword;

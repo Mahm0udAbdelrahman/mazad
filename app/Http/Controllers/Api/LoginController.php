@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Traits\HasImage;
 use App\Traits\HttpResponse;
 use Illuminate\Http\Request;
-use App\Service\LoginService;
+use App\Services\LoginService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\LoginResource;
@@ -27,7 +27,7 @@ class LoginController extends Controller
     {
 
         [$user, $token] = $this->loginService->login($loginRequest->validated());
-  
+
         $response = [
             'user'  => LoginResource::make($user),
             'token' => $token,

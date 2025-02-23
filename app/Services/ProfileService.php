@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\Services;
 
 use App\Models\User;
 
@@ -26,5 +26,5 @@ class ProfileService
         $user->update($data);
         return $user;
     }
-    
+
 }

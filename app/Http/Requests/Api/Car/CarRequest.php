@@ -24,7 +24,7 @@ class CarRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         return [
             'name'=> 'required|string|max:255',
             'car_type_id' => 'required|exists:car_types,id',
@@ -34,7 +34,9 @@ class CarRequest extends FormRequest
             'price'=> 'required|string|max:255',
             'license_year' => 'required|string|max:255',
             'description'=> 'required|string|max:1000',
-            'video' => 'required|mimes:mp4,avi,mov,wmv|max:1048576', // 1 جيجابايت
+            // 'video' => 'required|mimes:mp4,avi,mov,wmv|max:1048576', // 1 جيجابايت
+
+            'video'=> 'required|mimes:jpeg,png,jpg,pdf|max:2048',
             'image_license'=> 'required|mimes:jpeg,png,jpg,pdf|max:2048',
             'images'=> 'required|array',
             'images.*'=> 'required|image',

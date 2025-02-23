@@ -1,5 +1,5 @@
 <?php
-namespace App\Service;
+namespace App\Services;
 
 use App\Models\Car;
 use App\Models\Auction;
@@ -18,28 +18,32 @@ class CarService
     public function __construct(public Car $car){}
 
 
-    public function index()
+    public function index($limit = 10)
     {
-        return Car::where('user_id', auth()->id())->paginate();
+        return $this->car->where('user_id', auth()->id())->paginate($limit);
     }
     public function filterCars(array $filters)
     {
-        return Car::query()->where('status', 'approved')->filter($filters)->paginate(10); 
+        return $this->car->query()->approved()->filter($filters)->paginate(10);
     }
 
     public function getCarStatusPending()
     {
-        return Car::where('user_id', auth()->id())->where('status', 'pending')->paginate();
+        return $this->car->where('user_id', auth()->id())->pending()->paginate();
+
     }
 
     public function getCarStatusApproved()
     {
-        return Car::where('user_id', auth()->id())->where('status', 'approved')->paginate();
+
+        return $this->car->where('user_id', auth()->id())->approved()->paginate();
+
     }
 
     public function getCarStatusRejected()
     {
-        return Car::where('user_id', auth()->id())->where('status', 'rejected')->paginate();
+        return $this->car->where('user_id', auth()->id())->rejected()->paginate();
+
     }
 
     public function store(array $data): Car
@@ -154,8 +158,7 @@ public function update($id, array $data): Car
             'car_id' => $car->id,
             'user_id' => $user->id,
         ], [
-            'start_date' => now(),
-            'end_date' => now()->addDays(30),
+           'end_date' => now()->addWeeks(4),
             'start_price' => $car->price,
         ]);
     }

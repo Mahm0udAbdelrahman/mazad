@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Service\CarService;
+use App\Services\CarService;
 use App\Traits\HttpResponse;
 use App\Http\Resources\CarResource;
 use App\Http\Controllers\Controller;
@@ -34,8 +34,7 @@ class CarController extends Controller
     public function getCarStatusPending()
     {
         $cars = $this->carService->getCarStatusPending();
-        // return $this->paginatedResponse($cars, CarResource::class);
-        return $this->okResponse(new CarResource($cars), __('The car has been added successfully', [], request()->header('Accept-language')));
+        return $this->paginatedResponse($cars, CarResource::class);
 
     }
 

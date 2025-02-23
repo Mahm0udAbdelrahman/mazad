@@ -16,7 +16,9 @@ class CommitAuctionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user->id,
             'user_name' => $this->user->name,
+            'user_service' => $this->user->service,
             'user_image' => $this->user->image,
             'car_name' => $this->auction->car->name,
             'price' => $this->price,

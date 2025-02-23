@@ -106,37 +106,51 @@ class Car extends Model
     //     $query->when($sorts['updated_at'] ?? null, fn($query, $updated_at) => $query->orderBy('updated_at', $updated_at));
     // }
 
-    public function scopeSearch($query, $search)
-    {
-        return $query->where('name', 'like', '%' . $search . '%')
-            ->orWhere('model', 'like', '%' . $search . '%')
-            ->orWhere('year', 'like', '%' . $search . '%')
-            ->orWhere('color', 'like', '%' . $search . '%')
-            ->orWhere('price', 'like', '%' . $search . '%')
-            ->orWhere('description', 'like', '%' . $search . '%')
-            ->orWhere('kilometer', 'like', '%' . $search . '%')
-            ->orWhere('deposit', 'like', '%' . $search . '%')
-            ->orWhere('license_year', 'like', '%' . $search . '%')
-            ->orWhere('status', 'like', '%' . $search . '%')
-            ->orWhere('sold', 'like', '%' . $search . '%')
-            ->orWhere('created_at', 'like', '%' . $search . '%')
-            ->orWhere('updated_at', 'like', '%' . $search . '%');
-    }
+    // public function scopeSearch($query, $search)
+    // {
+    //     return $query->where('name', 'like', '%' . $search . '%')
+    //         ->orWhere('model', 'like', '%' . $search . '%')
+    //         ->orWhere('color', 'like', '%' . $search . '%')
+    //         ->orWhere('price', 'like', '%' . $search . '%')
+    //         ->orWhere('description', 'like', '%' . $search . '%')
+    //         ->orWhere('kilometer', 'like', '%' . $search . '%')
+    //         ->orWhere('deposit', 'like', '%' . $search . '%')
+    //         ->orWhere('license_year', 'like', '%' . $search . '%')
+    //         ->orWhere('status', 'like', '%' . $search . '%')
+    //         ->orWhere('sold', 'like', '%' . $search . '%')
+    //         ->orWhere('created_at', 'like', '%' . $search . '%')
+    //         ->orWhere('updated_at', 'like', '%' . $search . '%');
+    // }
 
-    public function scopeCarTypeId($query, $car_type_id)
-    {
-        return $query->where('car_type_id', $car_type_id);
-    }
+    // public function scopeCarTypeId($query, $car_type_id)
+    // {
+    //     return $query->where('car_type_id', $car_type_id);
+    // }
 
     // public function scopeStatus($query, $status)
     // {
     //     return $query->where('status', $status);
     // }
 
-    public function scopeSold($query, $sold)
-    {
-        return $query->where('sold', $sold);
+    // public function scopeSold($query, $sold)
+    // {
+    //     return $query->where('sold', $sold);
+    // }
+
+
+    public function scopePending($query) {
+        return $query->where('status', 'pending');
     }
+
+    public function scopeApproved($query) {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopeRejected($query) {
+        return $query->where('status', 'rejected');
+    }
+
+
 
 
 

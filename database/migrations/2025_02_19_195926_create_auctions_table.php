@@ -16,12 +16,12 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users','id')->cascadeOnDelete();
             $table->foreignId('car_id')->constrained('cars','id')->cascadeOnDelete();
             $table->string('start_price');
-            $table->timestamp('start_date');
             $table->timestamp('end_date');
             $table->foreignId('winner_id')->nullable()->constrained('users','id')->cascadeOnDelete();
             $table->string('winner_price')->nullable();
             $table->string('winner_date')->nullable();
             $table->enum('status', ['pending', 'won', 'lost'])->default('pending');
+           $table->softDeletes();
             $table->timestamps();
         });
     }

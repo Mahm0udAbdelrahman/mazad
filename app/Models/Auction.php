@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Auction extends Model
 {
+    use SoftDeletes;
     protected $fillable =
     [
         'user_id',
         'car_id',
         'start_price',
-        'start_date',
         'end_date',
         'winner_id',
         'winner_price',
@@ -37,10 +38,10 @@ class Auction extends Model
 
     public function winner()
     {
-        return $this->belongsTo(User::class, 'winner_id');
+        return $this->belongsTo(User::class, 'winner_id','id');
     }
 
-    
+
 
     public function scopeFilter($query, array $filters)
     {
