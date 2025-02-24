@@ -13,11 +13,17 @@ class Auction extends Model
         'user_id',
         'car_id',
         'start_price',
+        'start_date',
         'end_date',
         'winner_id',
         'winner_price',
         'winner_date',
         'status',
+        'created_at'
+    ];
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
 

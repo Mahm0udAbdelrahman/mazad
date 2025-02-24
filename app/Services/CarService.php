@@ -95,7 +95,7 @@ class CarService
             }
         }
 
-        return $newCar;
+        return $newCar->fresh();
     }
 
 
@@ -158,6 +158,7 @@ public function update($id, array $data): Car
             'car_id' => $car->id,
             'user_id' => $user->id,
         ], [
+            'start_date' => now(),
            'end_date' => now()->addWeeks(4),
             'start_price' => $car->price,
         ]);

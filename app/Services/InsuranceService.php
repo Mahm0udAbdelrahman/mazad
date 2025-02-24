@@ -43,7 +43,7 @@ class InsuranceService
         return response()->json(['success' => false, 'message' => 'المستخدم غير موجود'], 401);
     }
 
-    $authResponse = Http::post("{$this->baseUrl}/api/auth/tokens", [
+    $authResponse = Http::post("https://accept.paymob.com/api/auth/tokens", [
         'api_key' => $this->api_key,
     ]);
 
@@ -56,7 +56,7 @@ class InsuranceService
     $orderResponse = Http::withHeaders([
         'Authorization' => 'Bearer ' . $authToken,
         'Content-Type' => 'application/json',
-    ])->post("{$this->baseUrl}/api/ecommerce/orders", [
+    ])->post("https://accept.paymob.com/api/ecommerce/orders", [
         'auth_token' => $authToken,
         'delivery_needed' => false,
         'amount_cents' => $data['balance'] * 100,
@@ -93,7 +93,7 @@ class InsuranceService
     $paymentKeyResponse = Http::withHeaders([
         'Authorization' => 'Bearer ' . $authToken,
         'Content-Type' => 'application/json',
-    ])->post("{$this->baseUrl}/api/acceptance/payment_keys", [
+    ])->post("https://accept.paymob.com/api/acceptance/payment_keys", [
         'auth_token' => $authToken,
         'amount_cents' => $data['balance'] * 100,
         'expiration' => 3600,

@@ -66,6 +66,7 @@ class CarController extends Controller
     public function show(string $id)
     {
         $car =  $this->carService->show($id);
+
         return $this->okResponse(new CarResource($car), __('The car has been  successfully', [], request()->header('Accept-language')));
 
     }
